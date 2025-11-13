@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Diagnosis Result</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #eef1f4;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 5vh auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      color: #0066cc;
+    }
+
+    p {
+      font-size: 1.2rem;
+      margin: 1.2rem 0;
+    }
+
+    a, button {
+      display: inline-block;
+      background: #0066cc;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 6px;
+      text-decoration: none;
+      margin-top: 1rem;
+      margin-right: 0.5rem;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    a:hover, button:hover {
+      background: #004a99;
+    }
+
+    #chartContainer {
+      position: relative;
+      max-width: 280px;
+      margin: 2rem auto 1rem;
+    }
+
+    #chartCenter {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #333;
+      pointer-events: none;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 2rem;
+    }
+
+    table th, table td {
+      padding: 8px;
+      border-bottom: 1px solid #ccc;
+      text-align: left;
+    }
+
+    .resource-links {
+      margin-top: 2rem;
+      text-align: left;
+    }
+
+    .resource-links a {
+      display: block;
+      color: #ffffff;
+      margin: 4px 0;
+    }
+
+    .explanation {
+      margin-top: 2rem;
+      text-align: left;
+      background: #f7faff;
+      border-left: 4px solid #0066cc;
+      padding: 1rem;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="report">
+    <h1>Diagnosis Result</h1>
+    {% if result != "None" %}
+      <p>You may be showing signs of <strong>{{ result }}</strong>.</p>
+    {% else %}
+      <p>No likely disease detected from the given symptoms.</p>
+    {% endif %}
+
+    <!-- Circular Chart -->
+    <div id="chartContainer">
+      <canvas id="confidenceChart" width="250" height="250"></canvas>
+      <div id="chartCenter">{{ confidence }}%</div>
+    </div>
+
+    <p><strong>Confidence:</strong> {{ confidence }}%</p>
+
+    <!-- Symptom Table -->
+    {% if symptoms %}
+    <h2 style="color: #004a99;">Answered Symptoms</h2>
+    <table>
+      <thead><tr><th>Symptom</th><th>Response</th></tr></thead>
+      <tbody>
+        {% for q, a in symptoms %}
+          <tr><td>{{ q }}</td><td>{{ a|capitalize }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endif %}
+
+    <!-- Disease Explanation -->
+    {% if result != "None" %}
+    <div class="explanation">
+      <h3>What is {{ result }}?</h3>
+      {% if result.lower() == 'diabetes' %}
+        <p>Diabetes is a chronic condition that affects how your body turns food into energy. It results in high blood sugar levels due to problems with insulin production or function.</p>
+      {% elif result.lower() == 'heart disease' %}
+        <p>Heart disease refers to a range of conditions that affect your heart, including blood vessel disease, heart rhythm issues, and more. It is often related to plaque buildup in arteries.</p>
+      {% elif result.lower() == 'dengue' %}
+        <p>Dengue is a mosquito-borne viral infection causing high fever, headache, vomiting, muscle and joint pains, and skin rash.</p>
+      {% elif result.lower() == 'uti' %}
+        <p>A urinary tract infection (UTI) is an infection in any part of your urinary system. It causes pain or burning sensation during urination and may involve frequent urges to urinate.</p>
+      {% elif result.lower() == 'cold' %}
+        <p>The common cold is a viral infection of your nose and throat, typically harmless but uncomfortable, with symptoms like runny nose, sore throat, and cough.</p>
+      {% elif result.lower() == 'breast cancer' %}
+        <p>Breast cancer occurs when cells in the breast grow out of control. It often shows symptoms like lumps in the breast, changes in breast shape, or discharge from the nipple.</p>
+      {% else %}
+        <p>Learn more about {{ result }} from trusted medical sources or consult a professional for diagnosis.</p>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Helpful Resources -->
+    <div class="resource-links">
+      <h3 style="color: #004a99;">Helpful Resources</h3>
+      <a href="https://www.who.int/health-topics/diabetes" target="_blank">WHO - Diabetes</a>
+      <a href="https://www.heart.org/" target="_blank">American Heart Association</a>
+      <a href="https://www.breastcancer.org/" target="_blank">BreastCancer.org</a>
+      <a href="https://www.cdc.gov/dengue/" target="_blank">CDC - Dengue Info</a>
+      <a href="https://www.nhp.gov.in/" target="_blank">National Health Portal (India)</a>
+    </div>
+
+    <div style="margin-top: 2rem;">
+      <button onclick="downloadPDF()">📄 Download Report</button>
+      <a href="/">🔙 Back to Home</a>
+      <a href="/reset-symptoms">🔁 Try Again</a>
+    </div>
+  </div>
+
+  <script>
+    const confidenceValue = parseFloat("{{ confidence }}");
+    const chartColor = confidenceValue >= 80 ? 'green' : confidenceValue >= 50 ? 'orange' : 'red';
+
+    const ctx = document.getElementById('confidenceChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Confidence', 'Uncertainty'],
+        datasets: [{
+          data: [confidenceValue, 100 - confidenceValue],
+          backgroundColor: [chartColor, '#e0e0e0'],
+          borderWidth: 2
+        }]
+      },
+      options: {
+        cutout: '75%',
+        plugins: {
+          legend: { display: false },
+          tooltip: { enabled: true }
+        }
+      }
+    });
+
+    function downloadPDF() {
+      const element = document.getElementById("report");
+      html2pdf().set({ filename: 'Symptom_Report.pdf' }).from(element).save();
+    }
+  </script>
+</body>
+</html>

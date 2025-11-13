@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Prediction Result</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #eef1f4;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: auto;
+      padding: 2rem;
+      background: white;
+      margin-top: 5vh;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    h1 {
+      color: #0066cc;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    table th, table td {
+      text-align: left;
+      padding: 8px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .button-row {
+      margin-top: 2rem;
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    button, a.btn {
+      background: #0066cc;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      text-decoration: none;
+      font-size: 1rem;
+    }
+
+    button:hover, a.btn:hover {
+      background: #004a99;
+    }
+
+    #chartContainer {
+      position: relative;
+      max-width: 280px;
+      margin: 2rem auto 1rem;
+    }
+
+    #chartCenter {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #333;
+      pointer-events: none;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container" id="report">
+    <h1>Prediction Result</h1>
+    <p>{{ prediction }}</p>
+
+    {% if confidence >= 80 %}
+    <p style="color: green;"><strong>Confidence:</strong> {{ confidence }}%</p>
+    {% elif confidence >= 50 %}
+    <p style="color: orange;"><strong>Confidence:</strong> {{ confidence }}%</p>
+    {% else %}
+    <p style="color: red;"><strong>Confidence:</strong> {{ confidence }}%</p>
+    {% endif %}
+
+    <!-- Doughnut Chart -->
+    <div id="chartContainer">
+      <canvas id="confidenceChart" width="250" height="250"></canvas>
+      <div id="chartCenter">{{ confidence }}%</div>
+    </div>
+
+    <!-- Input Values Table -->
+    <h2 style="margin-top: 2rem; color: #0066cc;">Your Inputs</h2>
+    <table>
+      <thead><tr><th>Feature</th><th>Value</th></tr></thead>
+      <tbody>
+        {% for key, value in inputs.items() %}
+          <tr>
+            <td>{{ key.replace('_', ' ').capitalize() }}</td>
+            <td>{{ value }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <!-- Buttons -->
+    <div class="button-row">
+      <button onclick="downloadPDF()">📥 Download Report</button>
+      <a id="whatsappShare" class="btn" target="_blank">📲 Share on WhatsApp</a>
+      <a id="emailShare" class="btn" href="#">✉️ Share via Email</a>
+      <a href="/" class="btn">🔁 Try Again</a>
+    </div>
+  </div>
+
+  <script>
+    const confidenceValue = parseFloat("{{ confidence }}");
+
+    const chartColor = confidenceValue >= 80 ? 'green' :
+                       confidenceValue >= 50 ? 'orange' : 'red';
+
+    const ctx = document.getElementById('confidenceChart').getContext('2d');
+    const chart = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Confidence', 'Uncertainty'],
+        datasets: [{
+          data: [confidenceValue, 100 - confidenceValue],
+          backgroundColor: [chartColor, '#e0e0e0'],
+          borderWidth: 2
+        }]
+      },
+      options: {
+        cutout: '75%',
+        plugins: {
+          legend: { display: false },
+          tooltip: { enabled: true }
+        }
+      }
+    });
+
+    // PDF Generator with chart capture
+    function downloadPDF() {
+      const chartContainer = document.getElementById("chartContainer");
+      const chartCenter = document.getElementById("chartCenter");
+      const originalHTML = chartContainer.innerHTML;
+
+      html2canvas(chartContainer).then(canvas => {
+        const imgData = canvas.toDataURL("image/png");
+
+        const image = new Image();
+        image.src = imgData;
+        image.style.maxWidth = "100%";
+        image.style.margin = "1rem auto";
+        image.style.display = "block";
+
+        chartContainer.innerHTML = "";
+        chartContainer.appendChild(image);
+
+        setTimeout(() => {
+          const element = document.getElementById('report');
+          html2pdf().set({ filename: 'AI_HealthScan_Report.pdf' }).from(element).save().then(() => {
+            chartContainer.innerHTML = originalHTML;
+            chartContainer.appendChild(chartCenter);
+            chartCenter.innerText = confidenceValue + "%";
+          });
+        }, 300);
+      });
+    }
+
+    // Share Setup
+    const summary = "Prediction: {{ prediction }} | Confidence: {{ confidence }}%";
+    const shareURL = window.location.origin;
+
+    document.getElementById("whatsappShare").href =
+      "https://wa.me/?text=" + encodeURIComponent("🧠 AI HealthScan\n" + summary + "\nCheck yours at: " + shareURL);
+
+    document.getElementById("emailShare").href =
+      "mailto:?subject=AI HealthScan Result&body=" + encodeURIComponent(summary + "\n\nTry it yourself: " + shareURL);
+  </script>
+</body>
+</html>

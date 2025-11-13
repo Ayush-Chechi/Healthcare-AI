@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI HealthScan</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to right, #f0f4f8, #d9e8ff);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .container {
+      background: #fff;
+      padding: 2rem 2.5rem;
+      border-radius: 16px;
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+      margin-top: 5vh;
+      width: 100%;
+      max-width: 600px;
+      transition: all 0.3s ease;
+    }
+
+    h1 {
+      text-align: center;
+      color: #004a99;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      text-align: center;
+      color: #444;
+      margin-bottom: 1.5rem;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    label {
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+      color: #333;
+    }
+
+    input,
+    select {
+      padding: 0.8rem 1rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      transition: border-color 0.3s;
+    }
+
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: #0066cc;
+      box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.2);
+    }
+
+    button {
+      background: #0066cc;
+      color: white;
+      border: none;
+      padding: 0.9rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #004a99;
+    }
+
+    #formFields {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    #infoBox {
+      margin-top: 2rem;
+      background: #f7faff;
+      padding: 1rem 1.5rem;
+      border-left: 4px solid #0066cc;
+      border-radius: 10px;
+    }
+
+    #infoBox ul {
+      margin: 0.5rem 0 0 1.2rem;
+    }
+
+    #dailyTip {
+      text-align: center;
+      margin-top: 2rem;
+      font-style: italic;
+      color: #555;
+    }
+
+    hr {
+      margin: 2rem 0;
+      border: none;
+      border-top: 1px solid #ccc;
+    }
+
+    .diagnose-btn {
+      display: inline-block;
+      text-align: center;
+      background: #28a745;
+      color: white;
+      padding: 0.8rem 1.2rem;
+      border-radius: 8px;
+      margin-top: 1.5rem;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background 0.3s ease;
+    }
+
+    .diagnose-btn:hover {
+      background: #218838;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>AI HealthScan</h1>
+    <p>Select a disease and get an AI-powered diagnosis</p>
+
+    <form id="diseaseForm" action="/predict" method="POST">
+      <label for="disease">Choose a Disease:</label>
+      <select name="disease" id="disease" required onchange="showForm()">
+        <option value="">-- Select --</option>
+        <option value="diabetes">Diabetes</option>
+        <option value="heart">Heart Disease</option>
+        <option value="cancer">Breast Cancer</option>
+      </select>
+
+      <div id="formFields"></div>
+      <button type="submit">🔍 Predict</button>
+    </form>
+    
+    <hr />
+
+    <div id="infoBox">
+      <h2 style="color: #004a99;">Disease Info & Precautions</h2>
+      <div id="diseaseInfo" style="line-height: 1.7; color: #444;">Please select a disease to view information.</div>
+    </div>
+
+    <hr />
+    <a href="/symptom-checker" class="diagnose-btn">🩺 Diagnose Disease (Q&A)</a>
+    <hr/>
+
+    <div
+      style="background:#f7faff; padding:1rem 1.5rem; border-left:4px solid #0066cc; border-radius:10px; margin-bottom:2rem;">
+
+      <!-- Global Disease Stats -->
+      <div style="margin-top: 2rem;">
+        <h2 style="color: #004a99;">🌍 Global Disease Stats</h2>
+        <ul style="line-height: 1.8; color: #333; padding-left: 1.2rem;">
+          <li><strong>Diabetes:</strong> 537 million people affected globally (IDF, 2021)</li>
+          <li><strong>Heart Disease:</strong> Leading cause of death — ~17.9 million lives lost per year (WHO, 2022)
+          </li>
+          <li><strong>Breast Cancer:</strong> Most common cancer among women globally (WHO, 2023)</li>
+        </ul>
+      </div>
+    </div>
+    <hr />
+    
+
+    <div
+      style="background:#f7faff; padding:1rem 1.5rem; border-left:4px solid #0066cc; border-radius:10px; margin-bottom:2rem;">
+
+      <!-- Helpful Links / Resources -->
+      <div style="margin-top: 2rem;">
+        <h2 style="color: #004a99;">📚 Helpful Resources</h2>
+        <ul style="line-height: 1.8; color: #333; padding-left: 1.2rem;">
+          <li><a href="https://www.who.int/health-topics/diabetes" target="_blank">WHO on Diabetes</a></li>
+          <li><a href="https://www.heart.org/en/health-topics/heart-attack" target="_blank">American Heart
+              Association</a>
+          </li>
+          <li><a href="https://www.breastcancer.org/" target="_blank">BreastCancer.org</a></li>
+          <li><a href="https://www.cdc.gov/chronicdisease/index.htm" target="_blank">CDC Chronic Disease Center</a></li>
+          <li><a href="https://www.nhp.gov.in/" target="_blank">National Health Portal (India)</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <p id="dailyTip"></p>
+  </div>
+
+  <script>
+    function showForm() {
+      const disease = document.getElementById('disease').value;
+      const formFields = document.getElementById('formFields');
+      const diseaseInfo = document.getElementById('diseaseInfo');
+
+      const forms = {
+        diabetes: `
+          <input type="number" name="pregnancies" placeholder="Pregnancies (e.g., 1)" required />
+          <input type="number" name="glucose" placeholder="Glucose (e.g., 95)" required />
+          <input type="number" name="bp" placeholder="Blood Pressure (e.g., 70)" required />
+          <input type="number" name="skin" placeholder="Skin Thickness (e.g., 20)" required />
+          <input type="number" name="insulin" placeholder="Insulin (e.g., 80)" required />
+          <input type="number" step="0.1" name="bmi" placeholder="BMI (e.g., 22.0)" required />
+          <input type="number" step="0.01" name="dpf" placeholder="Diabetes Pedigree (e.g., 0.2)" required />
+          <input type="number" name="age" placeholder="Age (e.g., 25)" required />
+        `,
+        heart: `
+          <input type="number" name="age" placeholder="Age (e.g., 30)" required />
+          <input type="number" name="trestbps" placeholder="Resting Blood Pressure (e.g., 120)" required />
+          <input type="number" name="chol" placeholder="Cholesterol (e.g., 180)" required />
+          <input type="number" name="thalach" placeholder="Max Heart Rate (e.g., 170)" required />
+          <input type="number" step="0.1" name="oldpeak" placeholder="ST Depression (e.g., 0.0)" required />
+        `,
+        cancer: `
+          <input type="number" step="0.1" name="radius_mean" placeholder="Radius Mean (e.g., 12.0)" required />
+          <input type="number" step="0.1" name="texture_mean" placeholder="Texture Mean (e.g., 15.0)" required />
+          <input type="number" step="0.1" name="perimeter_mean" placeholder="Perimeter Mean (e.g., 80.0)" required />
+          <input type="number" step="0.1" name="area_mean" placeholder="Area Mean (e.g., 500.0)" required />
+        `
+      };
+
+      const info = {
+        diabetes: `
+          <strong>About:</strong> Diabetes affects how your body processes blood sugar.<br>
+          <strong>Common Symptoms:</strong> Frequent urination, increased thirst, fatigue.<br>
+          <strong>Precautions:</strong>
+          <ul>
+            <li>Maintain a healthy weight</li>
+            <li>Eat a balanced, low-sugar diet</li>
+            <li>Exercise regularly</li>
+            <li>Get regular glucose checks</li>
+          </ul>
+        `,
+        heart: `
+          <strong>About:</strong> Heart disease includes blocked arteries and high blood pressure.<br>
+          <strong>Common Symptoms:</strong> Chest pain, fatigue, shortness of breath.<br>
+          <strong>Precautions:</strong>
+          <ul>
+            <li>Avoid smoking and limit alcohol</li>
+            <li>Exercise 30 mins daily</li>
+            <li>Monitor blood pressure and cholesterol</li>
+            <li>Eat a heart-healthy diet</li>
+          </ul>
+        `,
+        cancer: `
+          <strong>About:</strong> Breast cancer is the uncontrolled growth of breast cells.<br>
+          <strong>Common Symptoms:</strong> Lumps, change in breast shape, nipple discharge.<br>
+          <strong>Precautions:</strong>
+          <ul>
+            <li>Perform regular self-exams</li>
+            <li>Get annual mammograms (as recommended)</li>
+            <li>Maintain a healthy lifestyle</li>
+            <li>Avoid tobacco and excessive alcohol</li>
+          </ul>
+        `
+      };
+
+      formFields.innerHTML = forms[disease] || '';
+      diseaseInfo.innerHTML = info[disease] || 'Please select a disease to view information.';
+    }
+
+    // Daily Tip Generator
+    const tips = [
+      "💧 Drink at least 8 glasses of water a day",
+      "🥗 Eat more fiber-rich fruits and veggies",
+      "🚶 Take a 10-minute walk after meals",
+      "😴 Aim for 7–8 hours of sleep daily",
+      "🧘‍♀️ Practice meditation for stress relief",
+      "🧴 Don’t skip sunscreen – your skin matters too!",
+      "🏥 Don’t miss your annual check-up"
+    ];
+    document.getElementById("dailyTip").innerText = "💡 Health Tip: " + tips[Math.floor(Math.random() * tips.length)];
+  </script>
+</body>
+
+</html>
