@@ -1,290 +1,543 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI HealthScan</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <title>Healthcare AI Prediction System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg: #090d1d;
+      --panel: #121a31;
+      --panel-soft: #1a2442;
+      --line: #2f3a63;
+      --text: #e8edff;
+      --muted: #b0bbdd;
+      --brand-a: #7e48ff;
+      --brand-b: #2d8dff;
+      --ok: #37d396;
+      --shadow: 0 20px 50px rgba(4, 8, 24, 0.45);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(to right, #f0f4f8, #d9e8ff);
       margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% -10%, rgba(126, 72, 255, 0.22), transparent 36%),
+        radial-gradient(circle at 90% 0%, rgba(45, 141, 255, 0.2), transparent 32%),
+        var(--bg);
       min-height: 100vh;
+      padding: 2rem 1rem 2.4rem;
     }
 
     .container {
-      background: #fff;
-      padding: 2rem 2.5rem;
-      border-radius: 16px;
-      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
-      margin-top: 5vh;
-      width: 100%;
-      max-width: 600px;
-      transition: all 0.3s ease;
+      max-width: 1080px;
+      margin: 0 auto;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
     }
 
-    h1 {
-      text-align: center;
-      color: #004a99;
-      margin-bottom: 0.5rem;
+    .hero {
+      padding: 2.2rem 2rem;
+      background: linear-gradient(110deg, var(--brand-a), var(--brand-b));
+      position: relative;
+      overflow: hidden;
     }
 
-    p {
-      text-align: center;
-      color: #444;
-      margin-bottom: 1.5rem;
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      right: -130px;
+      bottom: -150px;
+      background: rgba(255, 255, 255, 0.15);
+      filter: blur(7px);
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 800;
+    }
+
+    .hero p {
+      margin: 0.7rem 0 0;
+      max-width: 720px;
+      font-size: 1rem;
+      color: #edf1ff;
+    }
+
+    .section {
+      padding: 1.6rem 1.8rem 1.9rem;
+    }
+
+    .section-title {
+      margin: 0 0 1rem;
+      font-size: 1.08rem;
+      font-weight: 700;
+      color: #dce5ff;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .service-card {
+      text-align: left;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--panel);
+      color: var(--text);
+      padding: 1rem 1rem 1.1rem;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+      min-height: 180px;
+    }
+
+    .service-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 28px rgba(17, 30, 68, 0.45);
+      border-color: #54639a;
+    }
+
+    .service-card.active {
+      border-color: #7f8dca;
+      box-shadow: 0 0 0 1px rgba(166, 182, 237, 0.35), 0 12px 28px rgba(17, 30, 68, 0.45);
+      background: linear-gradient(180deg, rgba(122, 89, 255, 0.12), rgba(45, 141, 255, 0.07));
+    }
+
+    .card-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      margin-bottom: 0.85rem;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+    }
+
+    .card-title {
+      margin: 0;
+      font-size: 1.05rem;
+      font-weight: 800;
+    }
+
+    .card-sub {
+      margin: 0.45rem 0 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.45;
+    }
+
+    .card-best {
+      margin: 0.65rem 0 0;
+      color: #d6e0ff;
+      font-size: 0.85rem;
+    }
+
+    .panel {
+      margin-top: 1.4rem;
+      background: var(--panel-soft);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 1rem;
+    }
+
+    .model-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .tab-btn {
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #111a33;
+      color: #d6e1ff;
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 0.5rem 0.8rem;
+      cursor: pointer;
+    }
+
+    .tab-btn.active {
+      border-color: transparent;
+      background: linear-gradient(120deg, var(--brand-a), var(--brand-b));
+      color: #fff;
     }
 
     form {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.9rem;
+    }
+
+    .field-group {
       display: flex;
       flex-direction: column;
-      gap: 15px;
+      gap: 0.34rem;
+    }
+
+    .field-group.full {
+      grid-column: 1 / -1;
     }
 
     label {
-      font-weight: 600;
-      margin-bottom: 0.3rem;
-      color: #333;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #e2e9ff;
     }
 
-    input,
-    select {
-      padding: 0.8rem 1rem;
-      font-size: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      transition: border-color 0.3s;
-    }
-
-    input:focus,
-    select:focus {
-      outline: none;
-      border-color: #0066cc;
-      box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.2);
-    }
-
-    button {
-      background: #0066cc;
-      color: white;
-      border: none;
-      padding: 0.9rem;
-      font-size: 1rem;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-
-    button:hover {
-      background: #004a99;
-    }
-
-    #formFields {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-
-    #infoBox {
-      margin-top: 2rem;
-      background: #f7faff;
-      padding: 1rem 1.5rem;
-      border-left: 4px solid #0066cc;
+    input, select {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: #0f1731;
+      color: #eff3ff;
       border-radius: 10px;
+      padding: 0.72rem 0.78rem;
+      font-size: 0.92rem;
     }
 
-    #infoBox ul {
-      margin: 0.5rem 0 0 1.2rem;
+    input::placeholder {
+      color: #8f9bc5;
     }
 
-    #dailyTip {
-      text-align: center;
-      margin-top: 2rem;
-      font-style: italic;
-      color: #555;
+    .help {
+      font-size: 0.79rem;
+      color: #9eacd6;
+      line-height: 1.35;
+      margin: 0;
     }
 
-    hr {
-      margin: 2rem 0;
-      border: none;
-      border-top: 1px solid #ccc;
+    .btn-row {
+      grid-column: 1 / -1;
+      display: flex;
+      gap: 0.7rem;
+      flex-wrap: wrap;
+      margin-top: 0.2rem;
     }
 
-    .diagnose-btn {
-      display: inline-block;
-      text-align: center;
-      background: #28a745;
-      color: white;
-      padding: 0.8rem 1.2rem;
-      border-radius: 8px;
-      margin-top: 1.5rem;
+    button, .link-btn {
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: linear-gradient(120deg, var(--brand-a), var(--brand-b));
+      color: #fff;
+      font-weight: 700;
+      border-radius: 999px;
+      padding: 0.72rem 1.08rem;
+      cursor: pointer;
       text-decoration: none;
-      font-weight: 600;
-      transition: background 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
-    .diagnose-btn:hover {
-      background: #218838;
+    button:hover, .link-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(84, 90, 232, 0.35);
+    }
+
+    .ghost-btn {
+      background: #111a33;
+      border-color: var(--line);
+      color: #d9e3ff;
+    }
+
+    .muted-box {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #101833;
+      padding: 0.95rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+
+    #healthRiskResult {
+      margin-top: 0.75rem;
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .ok {
+      color: var(--ok);
+    }
+
+    .warn {
+      color: #ffd166;
+    }
+
+    .risk {
+      color: #ff7f96;
+    }
+
+    .disclaimer {
+      margin-top: 1.2rem;
+      font-size: 0.82rem;
+      color: #9ba9d2;
+      text-align: center;
+    }
+
+    @media (max-width: 880px) {
+      .card-grid,
+      form {
+        grid-template-columns: 1fr;
+      }
+
+      .hero,
+      .section {
+        padding: 1.2rem;
+      }
     }
   </style>
 </head>
-
 <body>
   <div class="container">
-    <h1>AI HealthScan</h1>
-    <p>Select a disease and get an AI-powered diagnosis</p>
+    <header class="hero">
+      <h1>Healthcare AI Prediction System</h1>
+      <p>AI-powered disease risk prediction and symptom analysis for educational, preliminary health screening.</p>
+    </header>
 
-    <form id="diseaseForm" action="/predict" method="POST">
-      <label for="disease">Choose a Disease:</label>
-      <select name="disease" id="disease" required onchange="showForm()">
-        <option value="">-- Select --</option>
-        <option value="diabetes">Diabetes</option>
-        <option value="heart">Heart Disease</option>
-        <option value="cancer">Breast Cancer</option>
-      </select>
+    <section class="section">
+      <h2 class="section-title">Choose a Service</h2>
 
-      <div id="formFields"></div>
-      <button type="submit">🔍 Predict</button>
-    </form>
-    
-    <hr />
+      <div class="card-grid">
+        <button class="service-card active" type="button" data-service="disease">
+          <span class="card-icon">🧪</span>
+          <h3 class="card-title">Disease Prediction</h3>
+          <p class="card-sub">Predict disease risk using medical parameters.</p>
+          <p class="card-best"><strong>Best for:</strong> Diabetes and heart disease screening support.</p>
+        </button>
 
-    <div id="infoBox">
-      <h2 style="color: #004a99;">Disease Info & Precautions</h2>
-      <div id="diseaseInfo" style="line-height: 1.7; color: #444;">Please select a disease to view information.</div>
-    </div>
+        <button class="service-card" type="button" data-service="symptom">
+          <span class="card-icon">🩺</span>
+          <h3 class="card-title">Symptom Checker</h3>
+          <p class="card-sub">Analyze health based on yes/no symptom questions.</p>
+          <p class="card-best"><strong>Best for:</strong> Fast symptom-based preliminary checks.</p>
+        </button>
 
-    <hr />
-    <a href="/symptom-checker" class="diagnose-btn">🩺 Diagnose Disease (Q&A)</a>
-    <hr/>
+        <button class="service-card" type="button" data-service="cancer">
+          <span class="card-icon">🔬</span>
+          <h3 class="card-title">Cancer Prediction</h3>
+          <p class="card-sub">Estimate cancer risk using diagnostic features.</p>
+          <p class="card-best"><strong>Best for:</strong> Breast cancer risk support using cellular attributes.</p>
+        </button>
 
-    <div
-      style="background:#f7faff; padding:1rem 1.5rem; border-left:4px solid #0066cc; border-radius:10px; margin-bottom:2rem;">
-
-      <!-- Global Disease Stats -->
-      <div style="margin-top: 2rem;">
-        <h2 style="color: #004a99;">🌍 Global Disease Stats</h2>
-        <ul style="line-height: 1.8; color: #333; padding-left: 1.2rem;">
-          <li><strong>Diabetes:</strong> 537 million people affected globally (IDF, 2021)</li>
-          <li><strong>Heart Disease:</strong> Leading cause of death — ~17.9 million lives lost per year (WHO, 2022)
-          </li>
-          <li><strong>Breast Cancer:</strong> Most common cancer among women globally (WHO, 2023)</li>
-        </ul>
+        <button class="service-card" type="button" data-service="health-risk">
+          <span class="card-icon">📊</span>
+          <h3 class="card-title">Health Risk Analysis</h3>
+          <p class="card-sub">Overall health assessment using combined data.</p>
+          <p class="card-best"><strong>Best for:</strong> Lifestyle + vitals risk overview in one place.</p>
+        </button>
       </div>
-    </div>
-    <hr />
-    
 
-    <div
-      style="background:#f7faff; padding:1rem 1.5rem; border-left:4px solid #0066cc; border-radius:10px; margin-bottom:2rem;">
-
-      <!-- Helpful Links / Resources -->
-      <div style="margin-top: 2rem;">
-        <h2 style="color: #004a99;">📚 Helpful Resources</h2>
-        <ul style="line-height: 1.8; color: #333; padding-left: 1.2rem;">
-          <li><a href="https://www.who.int/health-topics/diabetes" target="_blank">WHO on Diabetes</a></li>
-          <li><a href="https://www.heart.org/en/health-topics/heart-attack" target="_blank">American Heart
-              Association</a>
-          </li>
-          <li><a href="https://www.breastcancer.org/" target="_blank">BreastCancer.org</a></li>
-          <li><a href="https://www.cdc.gov/chronicdisease/index.htm" target="_blank">CDC Chronic Disease Center</a></li>
-          <li><a href="https://www.nhp.gov.in/" target="_blank">National Health Portal (India)</a></li>
-        </ul>
+      <div class="panel">
+        <div id="interactiveArea"></div>
       </div>
-    </div>
 
-    <p id="dailyTip"></p>
+      <p class="disclaimer">
+        Predictions are for educational and preliminary screening purposes only and are not a medical diagnosis.
+      </p>
+    </section>
   </div>
 
   <script>
-    function showForm() {
-      const disease = document.getElementById('disease').value;
-      const formFields = document.getElementById('formFields');
-      const diseaseInfo = document.getElementById('diseaseInfo');
+    const interactiveArea = document.getElementById("interactiveArea");
+    const serviceCards = document.querySelectorAll(".service-card");
 
-      const forms = {
-        diabetes: `
-          <input type="number" name="pregnancies" placeholder="Pregnancies (e.g., 1)" required />
-          <input type="number" name="glucose" placeholder="Glucose (e.g., 95)" required />
-          <input type="number" name="bp" placeholder="Blood Pressure (e.g., 70)" required />
-          <input type="number" name="skin" placeholder="Skin Thickness (e.g., 20)" required />
-          <input type="number" name="insulin" placeholder="Insulin (e.g., 80)" required />
-          <input type="number" step="0.1" name="bmi" placeholder="BMI (e.g., 22.0)" required />
-          <input type="number" step="0.01" name="dpf" placeholder="Diabetes Pedigree (e.g., 0.2)" required />
-          <input type="number" name="age" placeholder="Age (e.g., 25)" required />
-        `,
-        heart: `
-          <input type="number" name="age" placeholder="Age (e.g., 30)" required />
-          <input type="number" name="trestbps" placeholder="Resting Blood Pressure (e.g., 120)" required />
-          <input type="number" name="chol" placeholder="Cholesterol (e.g., 180)" required />
-          <input type="number" name="thalach" placeholder="Max Heart Rate (e.g., 170)" required />
-          <input type="number" step="0.1" name="oldpeak" placeholder="ST Depression (e.g., 0.0)" required />
-        `,
-        cancer: `
-          <input type="number" step="0.1" name="radius_mean" placeholder="Radius Mean (e.g., 12.0)" required />
-          <input type="number" step="0.1" name="texture_mean" placeholder="Texture Mean (e.g., 15.0)" required />
-          <input type="number" step="0.1" name="perimeter_mean" placeholder="Perimeter Mean (e.g., 80.0)" required />
-          <input type="number" step="0.1" name="area_mean" placeholder="Area Mean (e.g., 500.0)" required />
-        `
-      };
+    const diseaseForms = {
+      diabetes: [
+        { key: "pregnancies", label: "Pregnancies", placeholder: "e.g., 0-10", helper: "Number of prior pregnancies." },
+        { key: "glucose", label: "Glucose (mg/dL)", placeholder: "e.g., 70-200 mg/dL", helper: "Current blood glucose concentration." },
+        { key: "bp", label: "Blood Pressure (mmHg)", placeholder: "e.g., 60-130 mmHg", helper: "Diastolic blood pressure reading." },
+        { key: "skin", label: "Skin Thickness (mm)", placeholder: "e.g., 10-50 mm", helper: "Triceps skin fold thickness." },
+        { key: "insulin", label: "Insulin (mu U/ml)", placeholder: "e.g., 15-300", helper: "2-hour serum insulin estimate." },
+        { key: "bmi", label: "BMI", placeholder: "e.g., 18.5-40.0", helper: "Body Mass Index based on height and weight." },
+        { key: "dpf", label: "Diabetes Pedigree Function", placeholder: "e.g., 0.10-2.50", helper: "Genetic predisposition indicator." },
+        { key: "age", label: "Age", placeholder: "e.g., 18-90 years", helper: "Your current age in years." }
+      ],
+      heart: [
+        { key: "age", label: "Age", placeholder: "e.g., 30-85 years", helper: "Age strongly influences heart risk." },
+        { key: "trestbps", label: "Resting Blood Pressure (mmHg)", placeholder: "e.g., 90-190 mmHg", helper: "Resting blood pressure level." },
+        { key: "chol", label: "Cholesterol (mg/dL)", placeholder: "e.g., 120-320 mg/dL", helper: "Serum cholesterol concentration." },
+        { key: "thalach", label: "Max Heart Rate", placeholder: "e.g., 80-210 bpm", helper: "Maximum heart rate achieved." },
+        { key: "oldpeak", label: "ST Depression (Oldpeak)", placeholder: "e.g., 0.0-6.0", helper: "ST depression induced by exercise." }
+      ],
+      cancer: [
+        { key: "radius_mean", label: "Radius Mean", placeholder: "e.g., 7.0-30.0", helper: "Average radius from biopsy cell nuclei." },
+        { key: "texture_mean", label: "Texture Mean", placeholder: "e.g., 9.0-40.0", helper: "Texture variation of sampled cells." },
+        { key: "perimeter_mean", label: "Perimeter Mean", placeholder: "e.g., 40-200", helper: "Average perimeter of cell nuclei." },
+        { key: "area_mean", label: "Area Mean", placeholder: "e.g., 150-2500", helper: "Average area of cell nuclei." }
+      ]
+    };
 
-      const info = {
-        diabetes: `
-          <strong>About:</strong> Diabetes affects how your body processes blood sugar.<br>
-          <strong>Common Symptoms:</strong> Frequent urination, increased thirst, fatigue.<br>
-          <strong>Precautions:</strong>
-          <ul>
-            <li>Maintain a healthy weight</li>
-            <li>Eat a balanced, low-sugar diet</li>
-            <li>Exercise regularly</li>
-            <li>Get regular glucose checks</li>
-          </ul>
-        `,
-        heart: `
-          <strong>About:</strong> Heart disease includes blocked arteries and high blood pressure.<br>
-          <strong>Common Symptoms:</strong> Chest pain, fatigue, shortness of breath.<br>
-          <strong>Precautions:</strong>
-          <ul>
-            <li>Avoid smoking and limit alcohol</li>
-            <li>Exercise 30 mins daily</li>
-            <li>Monitor blood pressure and cholesterol</li>
-            <li>Eat a heart-healthy diet</li>
-          </ul>
-        `,
-        cancer: `
-          <strong>About:</strong> Breast cancer is the uncontrolled growth of breast cells.<br>
-          <strong>Common Symptoms:</strong> Lumps, change in breast shape, nipple discharge.<br>
-          <strong>Precautions:</strong>
-          <ul>
-            <li>Perform regular self-exams</li>
-            <li>Get annual mammograms (as recommended)</li>
-            <li>Maintain a healthy lifestyle</li>
-            <li>Avoid tobacco and excessive alcohol</li>
-          </ul>
-        `
-      };
-
-      formFields.innerHTML = forms[disease] || '';
-      diseaseInfo.innerHTML = info[disease] || 'Please select a disease to view information.';
+    function formFieldHTML(field) {
+      return `
+        <div class="field-group">
+          <label for="${field.key}">${field.label}</label>
+          <input type="number" step="any" id="${field.key}" name="${field.key}" placeholder="${field.placeholder}" required />
+          <p class="help">${field.helper}</p>
+        </div>
+      `;
     }
 
-    // Daily Tip Generator
-    const tips = [
-      "💧 Drink at least 8 glasses of water a day",
-      "🥗 Eat more fiber-rich fruits and veggies",
-      "🚶 Take a 10-minute walk after meals",
-      "😴 Aim for 7–8 hours of sleep daily",
-      "🧘‍♀️ Practice meditation for stress relief",
-      "🧴 Don’t skip sunscreen – your skin matters too!",
-      "🏥 Don’t miss your annual check-up"
-    ];
-    document.getElementById("dailyTip").innerText = "💡 Health Tip: " + tips[Math.floor(Math.random() * tips.length)];
+    function renderDiseasePanel(selectedModel = "diabetes") {
+      const fields = diseaseForms[selectedModel];
+      const fieldsHTML = fields.map(formFieldHTML).join("");
+
+      interactiveArea.innerHTML = `
+        <div class="model-tabs">
+          <button class="tab-btn ${selectedModel === "diabetes" ? "active" : ""}" type="button" data-model="diabetes">Diabetes Model</button>
+          <button class="tab-btn ${selectedModel === "heart" ? "active" : ""}" type="button" data-model="heart">Heart Model</button>
+        </div>
+        <form id="predictionForm" action="/predict" method="POST">
+          <input type="hidden" name="disease" value="${selectedModel}" />
+          ${fieldsHTML}
+          <div class="btn-row">
+            <button type="submit">Predict Disease Risk</button>
+            <a class="link-btn ghost-btn" href="/symptom-checker">Open Symptom Checker</a>
+          </div>
+        </form>
+      `;
+
+      document.querySelectorAll(".tab-btn").forEach((btn) => {
+        btn.addEventListener("click", () => renderDiseasePanel(btn.dataset.model));
+      });
+    }
+
+    function renderCancerPanel() {
+      const fieldsHTML = diseaseForms.cancer.map(formFieldHTML).join("");
+      interactiveArea.innerHTML = `
+        <form id="predictionForm" action="/predict" method="POST">
+          <input type="hidden" name="disease" value="cancer" />
+          ${fieldsHTML}
+          <div class="btn-row">
+            <button type="submit">Estimate Cancer Risk</button>
+          </div>
+        </form>
+      `;
+    }
+
+    function renderSymptomPanel() {
+      interactiveArea.innerHTML = `
+        <div class="muted-box">
+          Symptom Checker uses guided yes/no questions to suggest likely health conditions.
+          Use this when you do not have lab values yet.
+        </div>
+        <div class="btn-row">
+          <a class="link-btn" href="/symptom-checker">Start Symptom Checker</a>
+        </div>
+      `;
+    }
+
+    function renderHealthRiskPanel() {
+      interactiveArea.innerHTML = `
+        <form id="healthRiskForm">
+          <div class="field-group">
+            <label for="hr-age">Age</label>
+            <input type="number" id="hr-age" placeholder="e.g., 18-90 years" required />
+            <p class="help">Age contributes to baseline health risk.</p>
+          </div>
+          <div class="field-group">
+            <label for="hr-bmi">BMI</label>
+            <input type="number" step="0.1" id="hr-bmi" placeholder="e.g., 18.5-40.0" required />
+            <p class="help">Body mass index based on weight and height.</p>
+          </div>
+          <div class="field-group">
+            <label for="hr-sleep">Sleep (hours/day)</label>
+            <input type="number" step="0.1" id="hr-sleep" placeholder="e.g., 5-9 hours" required />
+            <p class="help">Average daily sleep duration.</p>
+          </div>
+          <div class="field-group">
+            <label for="hr-activity">Exercise (days/week)</label>
+            <input type="number" id="hr-activity" placeholder="e.g., 0-7 days" required />
+            <p class="help">Days with at least 30 mins of moderate activity.</p>
+          </div>
+          <div class="field-group">
+            <label for="hr-smoker">Smoking Status</label>
+            <select id="hr-smoker" required>
+              <option value="">Select one</option>
+              <option value="no">No</option>
+              <option value="yes">Yes</option>
+            </select>
+            <p class="help">Choose "Yes" if currently smoking regularly.</p>
+          </div>
+          <div class="field-group">
+            <label for="hr-bp">Systolic BP (mmHg)</label>
+            <input type="number" id="hr-bp" placeholder="e.g., 95-180 mmHg" required />
+            <p class="help">Latest systolic blood pressure reading.</p>
+          </div>
+          <div class="btn-row">
+            <button type="submit">Analyze Overall Risk</button>
+          </div>
+        </form>
+        <div id="healthRiskResult"></div>
+      `;
+
+      document.getElementById("healthRiskForm").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const age = Number(document.getElementById("hr-age").value);
+        const bmi = Number(document.getElementById("hr-bmi").value);
+        const sleep = Number(document.getElementById("hr-sleep").value);
+        const activity = Number(document.getElementById("hr-activity").value);
+        const smoker = document.getElementById("hr-smoker").value;
+        const bp = Number(document.getElementById("hr-bp").value);
+
+        let score = 0;
+        if (age >= 50) score += 20; else if (age >= 35) score += 10;
+        if (bmi >= 30) score += 20; else if (bmi >= 25) score += 10;
+        if (sleep < 6 || sleep > 9) score += 10;
+        if (activity < 3) score += 15;
+        if (smoker === "yes") score += 20;
+        if (bp >= 140) score += 15; else if (bp >= 130) score += 8;
+
+        let label = "Low";
+        let className = "ok";
+        if (score >= 55) {
+          label = "High";
+          className = "risk";
+        } else if (score >= 30) {
+          label = "Moderate";
+          className = "warn";
+        }
+
+        document.getElementById("healthRiskResult").innerHTML =
+          `<span class="${className}">Estimated Overall Risk: ${label} (${score}/100)</span>`;
+      });
+    }
+
+    function setActiveService(service) {
+      serviceCards.forEach((card) => card.classList.toggle("active", card.dataset.service === service));
+      if (service === "disease") renderDiseasePanel("diabetes");
+      if (service === "symptom") renderSymptomPanel();
+      if (service === "cancer") renderCancerPanel();
+      if (service === "health-risk") renderHealthRiskPanel();
+    }
+
+    serviceCards.forEach((card) => {
+      card.addEventListener("click", () => setActiveService(card.dataset.service));
+    });
+
+    setActiveService("disease");
   </script>
 </body>
-
 </html>

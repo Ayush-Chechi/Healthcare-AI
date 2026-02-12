@@ -3,42 +3,159 @@
 <head>
   <meta charset="UTF-8" />
   <title>Prediction Result</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <style>
+    :root {
+      --bg: #090d1d;
+      --panel: #121a31;
+      --panel-soft: #1a2442;
+      --text: #e8edff;
+      --muted: #b0bbdd;
+      --line: #2f3a63;
+      --brand-a: #7e48ff;
+      --brand-b: #2d8dff;
+      --ok: #37d396;
+      --warn: #ffd166;
+      --risk: #ff7f96;
+      --shadow: 0 20px 50px rgba(4, 8, 24, 0.45);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #eef1f4;
+      font-family: 'Manrope', sans-serif;
+      background:
+        radial-gradient(circle at 10% -10%, rgba(126, 72, 255, 0.22), transparent 36%),
+        radial-gradient(circle at 90% 0%, rgba(45, 141, 255, 0.2), transparent 32%),
+        var(--bg);
       margin: 0;
-      padding: 0;
+      padding: 2rem 1rem 2.4rem;
+      color: var(--text);
     }
 
     .container {
-      max-width: 700px;
+      max-width: 860px;
       margin: auto;
-      padding: 2rem;
-      background: white;
-      margin-top: 5vh;
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-      text-align: center;
+      overflow: hidden;
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
     }
 
-    h1 {
-      color: #0066cc;
+    .header {
+      background: linear-gradient(110deg, var(--brand-a), var(--brand-b));
+      padding: 2rem 1.8rem;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header::after {
+      content: "";
+      position: absolute;
+      inset: auto -20% -100px auto;
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.12);
+      filter: blur(6px);
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: clamp(1.5rem, 2.8vw, 2rem);
+      font-weight: 800;
+      letter-spacing: 0.2px;
+    }
+
+    .header p {
+      margin: 0.7rem 0 0;
+      opacity: 0.95;
+      max-width: 640px;
+      font-weight: 500;
+    }
+
+    .content {
+      padding: 1.8rem;
+    }
+
+    .result-summary {
+      background: var(--panel-soft);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 1rem 1.1rem;
+      text-align: center;
+      margin-bottom: 1.2rem;
+    }
+
+    .result-summary p {
+      margin: 0.35rem 0;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    .result-summary .prediction {
+      color: var(--text);
+      font-weight: 700;
+      font-size: 1.06rem;
+    }
+
+    .confidence-label {
+      font-weight: 700;
+    }
+
+    .confidence-high {
+      color: var(--ok);
+    }
+
+    .confidence-mid {
+      color: var(--warn);
+    }
+
+    .confidence-low {
+      color: var(--risk);
+    }
+
+    h2 {
+      margin: 1.7rem 0 0.9rem;
+      color: #d9e4ff;
+      font-size: 1.15rem;
+      letter-spacing: 0.2px;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 1rem;
+      margin-top: 0.5rem;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      overflow: hidden;
     }
 
     table th, table td {
       text-align: left;
-      padding: 8px;
-      border-bottom: 1px solid #ddd;
+      padding: 0.75rem 0.9rem;
+      border-bottom: 1px solid var(--line);
+      font-size: 0.95rem;
+    }
+
+    table th {
+      color: #dce7ff;
+      background: rgba(122, 66, 255, 0.12);
+      font-weight: 700;
+    }
+
+    table td {
+      color: var(--muted);
     }
 
     .button-row {
@@ -50,24 +167,32 @@
     }
 
     button, a.btn {
-      background: #0066cc;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 6px;
+      background: linear-gradient(120deg, var(--brand-a), var(--brand-b));
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 0.7rem 1.1rem;
+      border-radius: 999px;
       cursor: pointer;
       text-decoration: none;
-      font-size: 1rem;
+      font-size: 0.94rem;
+      font-weight: 700;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
     }
 
     button:hover, a.btn:hover {
-      background: #004a99;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(84, 90, 232, 0.35);
+      opacity: 0.96;
     }
 
     #chartContainer {
       position: relative;
       max-width: 280px;
-      margin: 2rem auto 1rem;
+      margin: 1.5rem auto 1rem;
+      padding: 0.8rem;
+      border-radius: 18px;
+      background: var(--panel-soft);
+      border: 1px solid var(--line);
     }
 
     #chartCenter {
@@ -76,64 +201,91 @@
       left: 50%;
       transform: translate(-50%, -50%);
       font-size: 1.5rem;
-      font-weight: bold;
-      color: #333;
+      font-weight: 800;
+      color: var(--text);
       pointer-events: none;
     }
 
-    .hidden {
-      display: none;
+    .disclaimer {
+      margin-top: 1.4rem;
+      padding: 0.85rem 1rem;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.02);
+      font-size: 0.86rem;
+      line-height: 1.45;
+      text-align: center;
+    }
+
+    @media (max-width: 640px) {
+      .header,
+      .content {
+        padding: 1.2rem;
+      }
     }
   </style>
 </head>
 
 <body>
   <div class="container" id="report">
-    <h1>Prediction Result</h1>
-    <p>{{ prediction }}</p>
-
-    {% if confidence >= 80 %}
-    <p style="color: green;"><strong>Confidence:</strong> {{ confidence }}%</p>
-    {% elif confidence >= 50 %}
-    <p style="color: orange;"><strong>Confidence:</strong> {{ confidence }}%</p>
-    {% else %}
-    <p style="color: red;"><strong>Confidence:</strong> {{ confidence }}%</p>
-    {% endif %}
-
-    <!-- Doughnut Chart -->
-    <div id="chartContainer">
-      <canvas id="confidenceChart" width="250" height="250"></canvas>
-      <div id="chartCenter">{{ confidence }}%</div>
+    <div class="header">
+      <h1>Healthcare AI Prediction System</h1>
+      <p>AI-powered preliminary health screening insights generated from your submitted medical values.</p>
     </div>
 
-    <!-- Input Values Table -->
-    <h2 style="margin-top: 2rem; color: #0066cc;">Your Inputs</h2>
-    <table>
-      <thead><tr><th>Feature</th><th>Value</th></tr></thead>
-      <tbody>
-        {% for key, value in inputs.items() %}
-          <tr>
-            <td>{{ key.replace('_', ' ').capitalize() }}</td>
-            <td>{{ value }}</td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+    <div class="content">
+      <div class="result-summary">
+        <p class="prediction">{{ prediction }}</p>
 
-    <!-- Buttons -->
-    <div class="button-row">
-      <button onclick="downloadPDF()">📥 Download Report</button>
-      <a id="whatsappShare" class="btn" target="_blank">📲 Share on WhatsApp</a>
-      <a id="emailShare" class="btn" href="#">✉️ Share via Email</a>
-      <a href="/" class="btn">🔁 Try Again</a>
+        {% if confidence >= 80 %}
+        <p class="confidence-label confidence-high">Confidence: {{ confidence }}%</p>
+        {% elif confidence >= 50 %}
+        <p class="confidence-label confidence-mid">Confidence: {{ confidence }}%</p>
+        {% else %}
+        <p class="confidence-label confidence-low">Confidence: {{ confidence }}%</p>
+        {% endif %}
+      </div>
+
+      <!-- Doughnut Chart -->
+      <div id="chartContainer">
+        <canvas id="confidenceChart" width="250" height="250"></canvas>
+        <div id="chartCenter">{{ confidence }}%</div>
+      </div>
+
+      <!-- Input Values Table -->
+      <h2>Your Inputs</h2>
+      <table>
+        <thead><tr><th>Feature</th><th>Value</th></tr></thead>
+        <tbody>
+          {% for key, value in inputs.items() %}
+            <tr>
+              <td>{{ key.replace('_', ' ').capitalize() }}</td>
+              <td>{{ value }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <!-- Buttons -->
+      <div class="button-row">
+        <button onclick="downloadPDF()">Download Report</button>
+        <a id="whatsappShare" class="btn" target="_blank">Share on WhatsApp</a>
+        <a id="emailShare" class="btn" href="#">Share via Email</a>
+        <a href="/" class="btn">Try Again</a>
+      </div>
+
+      <div class="disclaimer">
+        This output is intended for educational and preliminary screening support only and is not a medical diagnosis.
+      </div>
     </div>
   </div>
 
   <script>
     const confidenceValue = parseFloat("{{ confidence }}");
 
-    const chartColor = confidenceValue >= 80 ? 'green' :
-                       confidenceValue >= 50 ? 'orange' : 'red';
+    const chartColor = confidenceValue >= 80 ? '#37d396' :
+                       confidenceValue >= 50 ? '#ffd166' : '#ff7f96';
 
     const ctx = document.getElementById('confidenceChart').getContext('2d');
     const chart = new Chart(ctx, {
@@ -142,7 +294,7 @@
         labels: ['Confidence', 'Uncertainty'],
         datasets: [{
           data: [confidenceValue, 100 - confidenceValue],
-          backgroundColor: [chartColor, '#e0e0e0'],
+          backgroundColor: [chartColor, '#2b3458'],
           borderWidth: 2
         }]
       },

@@ -2,58 +2,100 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Diagnosis Result</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <style>
+    :root {
+      --bg: #090d1d;
+      --panel: #121a31;
+      --panel-soft: #1a2442;
+      --line: #2f3a63;
+      --text: #e8edff;
+      --muted: #b0bbdd;
+      --brand-a: #7e48ff;
+      --brand-b: #2d8dff;
+      --ok: #37d396;
+      --warn: #ffd166;
+      --risk: #ff7f96;
+      --shadow: 0 20px 50px rgba(4, 8, 24, 0.45);
+    }
+
+    * { box-sizing: border-box; }
+
     body {
-      font-family: 'Inter', sans-serif;
-      background: #eef1f4;
       margin: 0;
-      padding: 0;
-      text-align: center;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% -10%, rgba(126, 72, 255, 0.22), transparent 36%),
+        radial-gradient(circle at 90% 0%, rgba(45, 141, 255, 0.2), transparent 32%),
+        var(--bg);
+      min-height: 100vh;
+      padding: 2rem 1rem 2.4rem;
     }
 
     .container {
-      max-width: 600px;
-      margin: 5vh auto;
-      background: white;
-      padding: 2rem;
+      max-width: 860px;
+      margin: 0 auto;
+      border-radius: 24px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+      box-shadow: var(--shadow);
+    }
+
+    .header {
+      padding: 2rem 1.8rem;
+      background: linear-gradient(110deg, var(--brand-a), var(--brand-b));
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: clamp(1.45rem, 2.8vw, 1.95rem);
+      font-weight: 800;
+    }
+
+    .header p {
+      margin: 0.65rem 0 0;
+      color: #edf1ff;
+    }
+
+    .content {
+      padding: 1.4rem 1.5rem 1.7rem;
+    }
+
+    .summary {
+      background: var(--panel-soft);
+      border: 1px solid var(--line);
       border-radius: 16px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      padding: 1rem;
+      text-align: center;
     }
 
-    h1 {
-      color: #0066cc;
+    .summary p {
+      margin: 0.35rem 0;
+      color: var(--muted);
     }
 
-    p {
-      font-size: 1.2rem;
-      margin: 1.2rem 0;
-    }
-
-    a, button {
-      display: inline-block;
-      background: #0066cc;
-      color: white;
-      padding: 10px 20px;
-      border-radius: 6px;
-      text-decoration: none;
-      margin-top: 1rem;
-      margin-right: 0.5rem;
-      border: none;
-      cursor: pointer;
-      font-size: 1rem;
-    }
-
-    a:hover, button:hover {
-      background: #004a99;
+    .diagnosis {
+      color: var(--text);
+      font-size: 1.08rem;
+      font-weight: 800;
     }
 
     #chartContainer {
       position: relative;
       max-width: 280px;
-      margin: 2rem auto 1rem;
+      margin: 1.2rem auto 0.4rem;
+      padding: 0.85rem;
+      border-radius: 18px;
+      background: var(--panel-soft);
+      border: 1px solid var(--line);
     }
 
     #chartCenter {
@@ -62,116 +104,186 @@
       left: 50%;
       transform: translate(-50%, -50%);
       font-size: 1.5rem;
-      font-weight: bold;
-      color: #333;
+      font-weight: 800;
+      color: var(--text);
       pointer-events: none;
+    }
+
+    h2, h3 {
+      color: #dce5ff;
+      margin: 1.25rem 0 0.75rem;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 2rem;
+      margin-top: 0.5rem;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      overflow: hidden;
     }
 
     table th, table td {
-      padding: 8px;
-      border-bottom: 1px solid #ccc;
       text-align: left;
+      padding: 0.75rem 0.9rem;
+      border-bottom: 1px solid var(--line);
+      font-size: 0.94rem;
+    }
+
+    table th {
+      background: rgba(126, 72, 255, 0.13);
+      color: #e1e9ff;
+      font-weight: 700;
+    }
+
+    table td {
+      color: var(--muted);
+    }
+
+    .explanation {
+      margin-top: 1.1rem;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 0.95rem;
+      background: #101833;
+      color: var(--muted);
+      line-height: 1.45;
     }
 
     .resource-links {
-      margin-top: 2rem;
-      text-align: left;
+      margin-top: 1.1rem;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 0.95rem;
+      background: #101833;
     }
 
     .resource-links a {
       display: block;
-      color: #ffffff;
-      margin: 4px 0;
+      color: #b9d1ff;
+      text-decoration: none;
+      margin: 0.35rem 0;
     }
 
-    .explanation {
-      margin-top: 2rem;
-      text-align: left;
-      background: #f7faff;
-      border-left: 4px solid #0066cc;
-      padding: 1rem;
-      border-radius: 10px;
+    .resource-links a:hover {
+      color: #d8e8ff;
+    }
+
+    .btn-row {
+      margin-top: 1.4rem;
+      display: flex;
+      gap: 0.7rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    button, a {
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: linear-gradient(120deg, var(--brand-a), var(--brand-b));
+      color: #fff;
+      font-weight: 700;
+      border-radius: 999px;
+      padding: 0.72rem 1.1rem;
+      cursor: pointer;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    button:hover, a:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(84, 90, 232, 0.35);
+    }
+
+    .disclaimer {
+      margin-top: 1rem;
+      color: #9ba9d2;
+      font-size: 0.82rem;
+      text-align: center;
     }
   </style>
 </head>
 <body>
   <div class="container" id="report">
-    <h1>Diagnosis Result</h1>
-    {% if result != "None" %}
-      <p>You may be showing signs of <strong>{{ result }}</strong>.</p>
-    {% else %}
-      <p>No likely disease detected from the given symptoms.</p>
-    {% endif %}
-
-    <!-- Circular Chart -->
-    <div id="chartContainer">
-      <canvas id="confidenceChart" width="250" height="250"></canvas>
-      <div id="chartCenter">{{ confidence }}%</div>
+    <div class="header">
+      <h1>Symptom Analysis Result</h1>
+      <p>Preliminary symptom-based insight generated from your responses.</p>
     </div>
 
-    <p><strong>Confidence:</strong> {{ confidence }}%</p>
+    <div class="content">
+      <div class="summary">
+        {% if result != "None" %}
+          <p class="diagnosis">You may be showing signs of <strong>{{ result }}</strong>.</p>
+        {% else %}
+          <p class="diagnosis">No likely disease detected from the given symptoms.</p>
+        {% endif %}
 
-    <!-- Symptom Table -->
-    {% if symptoms %}
-    <h2 style="color: #004a99;">Answered Symptoms</h2>
-    <table>
-      <thead><tr><th>Symptom</th><th>Response</th></tr></thead>
-      <tbody>
-        {% for q, a in symptoms %}
-          <tr><td>{{ q }}</td><td>{{ a|capitalize }}</td></tr>
-        {% endfor %}
-      </tbody>
-    </table>
-    {% endif %}
+        <div id="chartContainer">
+          <canvas id="confidenceChart" width="250" height="250"></canvas>
+          <div id="chartCenter">{{ confidence }}%</div>
+        </div>
 
-    <!-- Disease Explanation -->
-    {% if result != "None" %}
-    <div class="explanation">
-      <h3>What is {{ result }}?</h3>
-      {% if result.lower() == 'diabetes' %}
-        <p>Diabetes is a chronic condition that affects how your body turns food into energy. It results in high blood sugar levels due to problems with insulin production or function.</p>
-      {% elif result.lower() == 'heart disease' %}
-        <p>Heart disease refers to a range of conditions that affect your heart, including blood vessel disease, heart rhythm issues, and more. It is often related to plaque buildup in arteries.</p>
-      {% elif result.lower() == 'dengue' %}
-        <p>Dengue is a mosquito-borne viral infection causing high fever, headache, vomiting, muscle and joint pains, and skin rash.</p>
-      {% elif result.lower() == 'uti' %}
-        <p>A urinary tract infection (UTI) is an infection in any part of your urinary system. It causes pain or burning sensation during urination and may involve frequent urges to urinate.</p>
-      {% elif result.lower() == 'cold' %}
-        <p>The common cold is a viral infection of your nose and throat, typically harmless but uncomfortable, with symptoms like runny nose, sore throat, and cough.</p>
-      {% elif result.lower() == 'breast cancer' %}
-        <p>Breast cancer occurs when cells in the breast grow out of control. It often shows symptoms like lumps in the breast, changes in breast shape, or discharge from the nipple.</p>
-      {% else %}
-        <p>Learn more about {{ result }} from trusted medical sources or consult a professional for diagnosis.</p>
+        <p><strong>Confidence:</strong> {{ confidence }}%</p>
+      </div>
+
+      {% if symptoms %}
+      <h2>Answered Symptoms</h2>
+      <table>
+        <thead><tr><th>Symptom</th><th>Response</th></tr></thead>
+        <tbody>
+          {% for q, a in symptoms %}
+            <tr><td>{{ q }}</td><td>{{ a|capitalize }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
       {% endif %}
-    </div>
-    {% endif %}
 
-    <!-- Helpful Resources -->
-    <div class="resource-links">
-      <h3 style="color: #004a99;">Helpful Resources</h3>
-      <a href="https://www.who.int/health-topics/diabetes" target="_blank">WHO - Diabetes</a>
-      <a href="https://www.heart.org/" target="_blank">American Heart Association</a>
-      <a href="https://www.breastcancer.org/" target="_blank">BreastCancer.org</a>
-      <a href="https://www.cdc.gov/dengue/" target="_blank">CDC - Dengue Info</a>
-      <a href="https://www.nhp.gov.in/" target="_blank">National Health Portal (India)</a>
-    </div>
+      {% if result != "None" %}
+      <div class="explanation">
+        <h3>What is {{ result }}?</h3>
+        {% if result.lower() == 'diabetes' %}
+          <p>Diabetes is a chronic condition that affects how your body turns food into energy. It results in high blood sugar levels due to problems with insulin production or function.</p>
+        {% elif result.lower() == 'heart disease' %}
+          <p>Heart disease refers to a range of conditions that affect your heart, including blood vessel disease, heart rhythm issues, and more. It is often related to plaque buildup in arteries.</p>
+        {% elif result.lower() == 'dengue' %}
+          <p>Dengue is a mosquito-borne viral infection causing high fever, headache, vomiting, muscle and joint pains, and skin rash.</p>
+        {% elif result.lower() == 'uti' %}
+          <p>A urinary tract infection (UTI) is an infection in any part of your urinary system. It causes pain or burning sensation during urination and may involve frequent urges to urinate.</p>
+        {% elif result.lower() == 'cold' %}
+          <p>The common cold is a viral infection of your nose and throat, typically harmless but uncomfortable, with symptoms like runny nose, sore throat, and cough.</p>
+        {% elif result.lower() == 'breast cancer' %}
+          <p>Breast cancer occurs when cells in the breast grow out of control. It often shows symptoms like lumps in the breast, changes in breast shape, or discharge from the nipple.</p>
+        {% else %}
+          <p>Learn more about {{ result }} from trusted medical sources or consult a professional for diagnosis.</p>
+        {% endif %}
+      </div>
+      {% endif %}
 
-    <div style="margin-top: 2rem;">
-      <button onclick="downloadPDF()">📄 Download Report</button>
-      <a href="/">🔙 Back to Home</a>
-      <a href="/reset-symptoms">🔁 Try Again</a>
+      <div class="resource-links">
+        <h3>Helpful Resources</h3>
+        <a href="https://www.who.int/health-topics/diabetes" target="_blank">WHO - Diabetes</a>
+        <a href="https://www.heart.org/" target="_blank">American Heart Association</a>
+        <a href="https://www.breastcancer.org/" target="_blank">BreastCancer.org</a>
+        <a href="https://www.cdc.gov/dengue/" target="_blank">CDC - Dengue Info</a>
+        <a href="https://www.nhp.gov.in/" target="_blank">National Health Portal (India)</a>
+      </div>
+
+      <div class="btn-row">
+        <button onclick="downloadPDF()">Download Report</button>
+        <a href="/">Back to Home</a>
+        <a href="/reset-symptoms">Try Again</a>
+      </div>
+
+      <p class="disclaimer">
+        This output is intended for educational and preliminary screening support only and is not a medical diagnosis.
+      </p>
     </div>
   </div>
 
   <script>
     const confidenceValue = parseFloat("{{ confidence }}");
-    const chartColor = confidenceValue >= 80 ? 'green' : confidenceValue >= 50 ? 'orange' : 'red';
+    const chartColor = confidenceValue >= 80 ? '#37d396' : confidenceValue >= 50 ? '#ffd166' : '#ff7f96';
 
     const ctx = document.getElementById('confidenceChart').getContext('2d');
     new Chart(ctx, {
@@ -180,7 +292,7 @@
         labels: ['Confidence', 'Uncertainty'],
         datasets: [{
           data: [confidenceValue, 100 - confidenceValue],
-          backgroundColor: [chartColor, '#e0e0e0'],
+          backgroundColor: [chartColor, '#2b3458'],
           borderWidth: 2
         }]
       },

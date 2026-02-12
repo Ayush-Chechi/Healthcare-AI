@@ -1,119 +1,196 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Symptom Checker</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg: #090d1d;
+      --panel: #121a31;
+      --panel-soft: #1a2442;
+      --line: #2f3a63;
+      --text: #e8edff;
+      --muted: #b0bbdd;
+      --brand-a: #7e48ff;
+      --brand-b: #2d8dff;
+      --shadow: 0 20px 50px rgba(4, 8, 24, 0.45);
+    }
+
+    * { box-sizing: border-box; }
+
     body {
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(to right, #f0f4f8, #d9e8ff);
       margin: 0;
-      padding: 0;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% -10%, rgba(126, 72, 255, 0.22), transparent 36%),
+        radial-gradient(circle at 90% 0%, rgba(45, 141, 255, 0.2), transparent 32%),
+        var(--bg);
+      min-height: 100vh;
+      padding: 2rem 1rem 2.4rem;
     }
 
     .container {
-      max-width: 600px;
-      margin: 5vh auto;
-      background: white;
-      padding: 2rem;
+      max-width: 760px;
+      margin: 0 auto;
+      border-radius: 24px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+      box-shadow: var(--shadow);
+    }
+
+    .header {
+      padding: 2rem 1.8rem;
+      background: linear-gradient(110deg, var(--brand-a), var(--brand-b));
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: clamp(1.45rem, 2.8vw, 1.95rem);
+      font-weight: 800;
+    }
+
+    .header p {
+      margin: 0.65rem 0 0;
+      color: #edf1ff;
+    }
+
+    .content {
+      padding: 1.4rem 1.5rem 1.7rem;
+    }
+
+    .question-card {
+      background: var(--panel-soft);
+      border: 1px solid var(--line);
       border-radius: 16px;
-      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
-      text-align: center;
+      padding: 1rem;
     }
 
-    h1 {
-      color: #004a99;
-      margin-bottom: 1.5rem;
+    .question-meta {
+      margin: 0;
+      color: #c8d3f6;
+      font-size: 0.9rem;
+      font-weight: 700;
     }
 
-    h2 {
-      color: #4476ac;
-      margin-bottom: 1.5rem;
-    }
-
-    button {
-      background: #0066cc;
-      color: white;
-      border: none;
-      padding: 0.8rem 1.5rem;
-      font-size: 1rem;
-      border-radius: 8px;
-      margin: 10px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background: #004a99;
+    .question {
+      margin: 0.6rem 0 0;
+      font-size: 1.15rem;
+      line-height: 1.4;
+      font-weight: 700;
     }
 
     .progress {
-      margin: 1rem auto 2rem;
-      background: #e0e0e0;
-      border-radius: 10px;
+      margin: 1.05rem 0 0.55rem;
+      background: #111a33;
+      border-radius: 999px;
       height: 12px;
       width: 100%;
-      position: relative;
+      border: 1px solid var(--line);
+      overflow: hidden;
     }
 
     .progress-bar {
-      background: #28a745;
       height: 100%;
-      border-radius: 10px;
+      border-radius: 999px;
+      transition: width 0.25s ease;
     }
 
-    a {
-      color: #0066cc;
-      display: inline-block;
-      margin-top: 1.5rem;
+    .progress-text {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.85rem;
     }
 
-    .button {
-      background: #0066cc;
-      color: white;
-      border: none;
-      padding: 0.9rem;
-      font-size: 1rem;
-      border-radius: 8px;
+    .helper {
+      margin: 1rem 0 0.8rem;
+      color: #c1ccec;
+      font-size: 0.88rem;
+      line-height: 1.45;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-top: 0.5rem;
+    }
+
+    button, .button {
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: linear-gradient(120deg, var(--brand-a), var(--brand-b));
+      color: #fff;
+      font-weight: 700;
+      border-radius: 999px;
+      padding: 0.72rem 1.1rem;
       cursor: pointer;
-      transition: background 0.3s;
       text-decoration: none;
+      font-size: 0.9rem;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
-    .button:hover {
-      background: #004a99;
+    button:hover, .button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(84, 90, 232, 0.35);
+    }
+
+    .ghost {
+      background: #111a33;
+      border-color: var(--line);
+      color: #d9e3ff;
+    }
+
+    .disclaimer {
+      margin-top: 1rem;
+      color: #9ba9d2;
+      font-size: 0.82rem;
+      text-align: center;
     }
   </style>
 </head>
-
 <body>
   <div class="container">
-    <h1>Disease Diagnosis</h1>
-    <h2>Ques.- {{ question }}</h2>
-
-    <div class="progress">
-      <div class="progress-bar" style="
-    width: {{ ((progress - 1) * 100 / total) | round(0) }}%;
-    background-color: {% if ((progress - 1) / total) <= 0.33 %}#dc3545
-                      {% elif ((progress - 1) / total) <= 0.66 %}#ffc107
-                      {% else %}#28a745{% endif %};
-    ">
-      </div>
+    <div class="header">
+      <h1>Symptom Checker</h1>
+      <p>Answer one question at a time for a guided, beginner-friendly symptom assessment.</p>
     </div>
-    <p style="text-align:center; font-size: 0.9rem; color: #444;">
-      {{ ((progress - 1) * 100 / total) | round(0) }}% completed
-    </p>
 
+    <div class="content">
+      <div class="question-card">
+        <p class="question-meta">Question {{ progress }} of {{ total }}</p>
+        <h2 class="question">{{ question }}</h2>
 
+        <div class="progress">
+          <div class="progress-bar" style="
+            width: {{ ((progress - 1) * 100 / total) | round(0) }}%;
+            background-color: {% if ((progress - 1) / total) <= 0.33 %}#ff7f96
+                              {% elif ((progress - 1) / total) <= 0.66 %}#ffd166
+                              {% else %}#37d396{% endif %};
+          "></div>
+        </div>
+        <p class="progress-text">{{ ((progress - 1) * 100 / total) | round(0) }}% completed</p>
 
-    <form action="/symptom-answer" method="post">
-      <button type="submit" name="answer" value="yes">Yes</button>
-      <button type="submit" name="answer" value="no">No</button>
-    </form>
+        <p class="helper">
+          Choose <strong>Yes</strong> if you are currently experiencing this symptom.
+          Choose <strong>No</strong> if the symptom is not present or you are unsure.
+        </p>
 
-    <a href="/reset-symptoms" class="button">🔁 Reset</a>
+        <form action="/symptom-answer" method="post" class="btn-row">
+          <button type="submit" name="answer" value="yes">Yes</button>
+          <button type="submit" name="answer" value="no" class="ghost">No</button>
+          <a href="/reset-symptoms" class="button ghost">Reset</a>
+        </form>
+      </div>
+
+      <p class="disclaimer">
+        This tool provides educational and preliminary screening guidance only and is not a medical diagnosis.
+      </p>
+    </div>
   </div>
 </body>
-
 </html>
