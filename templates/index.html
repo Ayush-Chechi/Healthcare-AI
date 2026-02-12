@@ -90,6 +90,13 @@
       color: #dce5ff;
     }
 
+    .section-helper {
+      margin: -0.45rem 0 1rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+
     .card-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -319,33 +326,41 @@
 
     <section class="section">
       <h2 class="section-title">Choose a Service</h2>
+      <p class="section-helper">Select a module below to directly open its guided input flow.</p>
 
       <div class="card-grid">
-        <button class="service-card active" type="button" data-service="disease">
-          <span class="card-icon">🧪</span>
-          <h3 class="card-title">Disease Prediction</h3>
-          <p class="card-sub">Predict disease risk using medical parameters.</p>
-          <p class="card-best"><strong>Best for:</strong> Diabetes and heart disease screening support.</p>
+        <button class="service-card active" type="button" data-service="heart">
+          <span class="card-icon">❤️</span>
+          <h3 class="card-title">Heart Disease Prediction</h3>
+          <p class="card-sub">Predict heart disease risk using clinical parameters.</p>
+          <p class="card-best"><strong>Best for:</strong> Blood pressure, cholesterol, and cardiac screening support.</p>
+        </button>
+
+        <button class="service-card" type="button" data-service="diabetes">
+          <span class="card-icon">🩸</span>
+          <h3 class="card-title">Diabetes Prediction</h3>
+          <p class="card-sub">Assess diabetes risk using glucose, BMI, and health indicators.</p>
+          <p class="card-best"><strong>Best for:</strong> Blood sugar and metabolic risk assessment.</p>
         </button>
 
         <button class="service-card" type="button" data-service="symptom">
           <span class="card-icon">🩺</span>
           <h3 class="card-title">Symptom Checker</h3>
-          <p class="card-sub">Analyze health based on yes/no symptom questions.</p>
+          <p class="card-sub">Analyze possible conditions based on symptoms and yes/no questions.</p>
           <p class="card-best"><strong>Best for:</strong> Fast symptom-based preliminary checks.</p>
         </button>
 
         <button class="service-card" type="button" data-service="cancer">
           <span class="card-icon">🔬</span>
           <h3 class="card-title">Cancer Prediction</h3>
-          <p class="card-sub">Estimate cancer risk using diagnostic features.</p>
+          <p class="card-sub">Estimate cancer risk using diagnostic and cellular features.</p>
           <p class="card-best"><strong>Best for:</strong> Breast cancer risk support using cellular attributes.</p>
         </button>
 
         <button class="service-card" type="button" data-service="health-risk">
           <span class="card-icon">📊</span>
-          <h3 class="card-title">Health Risk Analysis</h3>
-          <p class="card-sub">Overall health assessment using combined data.</p>
+          <h3 class="card-title">General Health Risk Analysis</h3>
+          <p class="card-sub">Overall health assessment using combined medical data.</p>
           <p class="card-best"><strong>Best for:</strong> Lifestyle + vitals risk overview in one place.</p>
         </button>
       </div>
@@ -400,28 +415,20 @@
       `;
     }
 
-    function renderDiseasePanel(selectedModel = "diabetes") {
-      const fields = diseaseForms[selectedModel];
+    function renderPredictionPanel(modelKey, submitLabel) {
+      const fields = diseaseForms[modelKey];
       const fieldsHTML = fields.map(formFieldHTML).join("");
 
       interactiveArea.innerHTML = `
-        <div class="model-tabs">
-          <button class="tab-btn ${selectedModel === "diabetes" ? "active" : ""}" type="button" data-model="diabetes">Diabetes Model</button>
-          <button class="tab-btn ${selectedModel === "heart" ? "active" : ""}" type="button" data-model="heart">Heart Model</button>
-        </div>
         <form id="predictionForm" action="/predict" method="POST">
-          <input type="hidden" name="disease" value="${selectedModel}" />
+          <input type="hidden" name="disease" value="${modelKey}" />
           ${fieldsHTML}
           <div class="btn-row">
-            <button type="submit">Predict Disease Risk</button>
+            <button type="submit">${submitLabel}</button>
             <a class="link-btn ghost-btn" href="/symptom-checker">Open Symptom Checker</a>
           </div>
         </form>
       `;
-
-      document.querySelectorAll(".tab-btn").forEach((btn) => {
-        btn.addEventListener("click", () => renderDiseasePanel(btn.dataset.model));
-      });
     }
 
     function renderCancerPanel() {
@@ -527,7 +534,8 @@
 
     function setActiveService(service) {
       serviceCards.forEach((card) => card.classList.toggle("active", card.dataset.service === service));
-      if (service === "disease") renderDiseasePanel("diabetes");
+      if (service === "heart") renderPredictionPanel("heart", "Predict Heart Disease Risk");
+      if (service === "diabetes") renderPredictionPanel("diabetes", "Predict Diabetes Risk");
       if (service === "symptom") renderSymptomPanel();
       if (service === "cancer") renderCancerPanel();
       if (service === "health-risk") renderHealthRiskPanel();
@@ -537,7 +545,7 @@
       card.addEventListener("click", () => setActiveService(card.dataset.service));
     });
 
-    setActiveService("disease");
+    setActiveService("heart");
   </script>
 </body>
 </html>
