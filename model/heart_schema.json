@@ -1,0 +1,82 @@
+{
+  "features": {
+    "age": {
+      "type": "numeric",
+      "min": 32.0,
+      "max": 74.0,
+      "default": 54.0
+    },
+    "sex": {
+      "type": "numeric",
+      "min": 0.0,
+      "max": 1.0,
+      "default": 1.0
+    },
+    "cp": {
+      "type": "numeric",
+      "min": 1.0,
+      "max": 4.0,
+      "default": 4.0
+    },
+    "trestbps": {
+      "type": "numeric",
+      "min": 95.0,
+      "max": 180.0,
+      "default": 130.0
+    },
+    "chol": {
+      "type": "numeric",
+      "min": 0.0,
+      "max": 412.55000000000007,
+      "default": 223.0
+    },
+    "fbs": {
+      "type": "numeric",
+      "min": 0.0,
+      "max": 1.0,
+      "default": 0.0
+    },
+    "restecg": {
+      "type": "numeric",
+      "min": 0.0,
+      "max": 2.0,
+      "default": 0.0
+    },
+    "thalach": {
+      "type": "numeric",
+      "min": 75.56,
+      "max": 186.36,
+      "default": 140.0
+    },
+    "exang": {
+      "type": "numeric",
+      "min": 0.0,
+      "max": 1.0,
+      "default": 0.0
+    },
+    "oldpeak": {
+      "type": "numeric",
+      "min": -0.586,
+      "max": 4.0,
+      "default": 0.5
+    },
+    "slope": {
+      "type": "numeric",
+      "min": 1.0,
+      "max": 3.0,
+      "default": 2.0
+    },
+    "ca": {
+      "type": "numeric",
+      "min": 0.0,
+      "max": 3.0,
+      "default": 0.0
+    },
+    "thal": {
+      "type": "numeric",
+      "min": 3.0,
+      "max": 7.0,
+      "default": 6.0
+    }
+  }
+}

@@ -1,120 +1,95 @@
-# 🩺 AI HealthScan – Disease Diagnosis & Prediction
+# 🏥 Healthcare AI Prediction System
 
-**AI HealthScan** is a smart web application that supports early risk screening using trained ML models and a symptom-based Q&A flow.
+**AI HealthScan** is a smart web application that supports early risk screening for **Diabetes**, **Heart Disease**, and **Breast Cancer** using advanced Machine Learning models (XGBoost & RandomForest). It also features a symptom-based checker for common conditions.
 
-## 🔍 Features
+---
+
+## 🚀 Key Features
 
 ### 🤖 AI Model-Based Predictions
-- Predicts likelihood of:
-  - Diabetes
-  - Heart Disease
-  - Breast Cancer
-- Uses trained ML models (Random Forest)
-- Confidence score shown with a circular chart
-- PDF report download & share via WhatsApp/Email
+- **Heart Disease**: Uses a tuned **RandomForest** pipeline trained on the combined UCI processed Heart Disease datasets (920 rows).
+- **Diabetes**: Uses a tuned **RandomForest** pipeline trained on the UCI Early Stage Diabetes Risk dataset (520 rows).
+- **Breast Cancer**: Uses a tuned **XGBoost** pipeline trained on **WDBC** (569 rows, 30 features).
+- **Interactive UI**: Built with **Streamlit** for real-time risk assessment.
+- **Auto-adapting inputs**: The app generates inputs from a saved feature schema (`model/*_schema.json`) so it stays compatible as datasets/models evolve.
 
-### 🧠 Symptom-Based Diagnosis
-- One-by-one yes/no symptom questionnaire
-- Diagnoses diseases like:
+### 🧠 Symptom-Based Check
+- Simple Q&A flow to screen for:
   - Dengue
   - UTI
-  - Cold
-  - Breast Cancer
-  - More...
-- Animated progress bar
-- Confidence visualization
-- Explanation of diagnosis + links to helpful resources
+  - Cold/Flu
+  - General symptoms
 
 ---
 
-## 🖥️ Tech Stack (What + Where)
-
-### Frontend (HTML/CSS/JS)
-- **HTML/CSS**: Page layout and styling in `templates/index.html`, `templates/result.html`, `templates/symptom_question.html`, `templates/symptom_result.html`
-- **JavaScript**:
-  - Dynamic input form + disease info in `templates/index.html`
-  - Confidence doughnut chart using `Chart.js` in `templates/result.html` and `templates/symptom_result.html`
-  - PDF export via `html2pdf.js` and chart capture via `html2canvas` in `templates/result.html`
-  - WhatsApp/Email share links in `templates/result.html`
-
-### Backend (Python + Flask)
-- **Flask**: Routing, form handling, and template rendering in `app.py`
-- **Session storage**: Tracks symptom-question progress in `app.py`
-
-### ML/Data
-- **scikit-learn**: RandomForest models trained in `train_diabetes.py`, `train_heart.py`, `train_cancer.py`
-- **pandas**: Data loading/cleanup in training scripts; input transformation for prediction in `app.py`
-- **pickle**: Model serialization to `model/*.pkl` and loading in `app.py`
+## 📊 Notebook Analysis & Feature Engineering
+This project includes a comprehensive Jupyter Notebook (`Healthcare_AI_Analysis.ipynb`) that:
+- **Documents dataset sources** (see `data/SOURCES.md`)
+- **Shows EDA + sanity-check ROC curves**
+- **Summarizes model performance** using Accuracy / Precision / Recall / F1 / AUC-ROC
 
 ---
 
-## 📁 File & Folder Guide (What Each File Does)
+## 🛠️ Tech Stack
 
-- `app.py` — Flask app with routes for prediction + symptom checker, loads ML models, renders templates
-- `train_diabetes.py` — Trains diabetes model from `diabetes.csv` and saves `model/diabetes_model.pkl`
-- `train_heart.py` — Trains heart disease model from `heart.csv` and saves `model/heart_model.pkl`
-- `train_cancer.py` — Trains breast cancer model using `sklearn.datasets.load_breast_cancer` and saves `model/cancer_model.pkl`
-- `requirements.txt` — Python dependencies for the app and ML training
-- `diabetes.csv` — Dataset used to train diabetes model
-- `heart.csv` — Dataset used to train heart disease model
-- `model/` — Saved ML models (`*.pkl`) used by the Flask app
-- `templates/` — HTML templates rendered by Flask
-- `templates/index.html` — Disease selector + input form + disease info + links
-- `templates/result.html` — Prediction results, confidence chart, PDF download, share links
-- `templates/symptom_question.html` — Symptom questionnaire UI with progress bar
-- `templates/symptom_result.html` — Symptom-based result page with chart and explanations
-- `README.md` — Project overview and setup notes
+- **App UI**: Streamlit (Python-based web UI)
+- **ML Models**: XGBoost, Scikit-Learn (RandomForest)
+- **Data Processing**: Pandas, NumPy
+- **Analysis**: Jupyter Notebook, YData Profiling, Matplotlib/Seaborn
 
 ---
 
-## 🚀 Running Locally
+## 📂 Project Structure
 
-1. **Clone the repository**
-2. **Install dependencies**
+- `app/` — Streamlit application code
+- `streamlit_app.py` — Thin launcher (kept for the same run command)
+- `scripts/` — Training + utilities (rebuild models, generate notebook)
+- `Healthcare_AI_Analysis.ipynb` — Comprehensive EDA and model training notebook
+- `model/` — Trained pipeline artifacts + schemas + metrics
+- `data/` — Normalized datasets + dataset sources
+- `frontend/` — Optional static landing page (not used by Streamlit)
 
-```bash
-pip install -r requirements.txt
-```
+**Why there is no `templates/` folder**
+- In Flask, HTML lives in `templates/` and CSS/JS in `static/`.  
+- This project’s **actual app is Streamlit**, so Flask’s `templates/static` structure is unnecessary and confusing.
+- The previous HTML UI has been kept only as a **static prototype** in `frontend/`.
 
-3. **Run the app**
+---
 
-```bash
-python app.py
-```
+## 🏃‍♂️ Running Locally
 
-4. **Open in browser**
+1. **Install dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-```
-http://127.0.0.1:5000
-```
+2. **Run the Streamlit App**
+   ```bash
+   streamlit run streamlit_app.py
+   ```
+
+3. **Open in Browser**
+   - The app should automatically open at `http://localhost:8501`
 
 ---
 
 ## 📊 Datasets Used
 
-1. PIMA Indians Diabetes Dataset (`diabetes.csv`)
-2. Heart Disease UCI Dataset (`heart.csv`)
-3. Breast Cancer Wisconsin Dataset (via `sklearn.datasets.load_breast_cancer`)
+See `data/SOURCES.md` for direct URLs and citations. Current datasets:
+
+1. **Early Stage Diabetes Risk Prediction Dataset (UCI)** — `data/diabetes.csv` (520 rows, 16 features)
+2. **Heart Disease (UCI processed: Cleveland + Hungary + Switzerland + VA)** — `data/heart.csv` (920 rows, 13 features)
+3. **Breast Cancer Wisconsin (Diagnostic) (WDBC) (UCI)** — `data/breast_cancer_wdbc.csv` (569 rows, 30 features)
+
+### Current model performance (holdout test split)
+- **Diabetes**: Acc 0.971 · Precision 0.984 · Recall 0.969 · F1 0.976 · AUC 0.999
+- **Heart**: Acc 0.826 · Precision 0.824 · Recall 0.873 · F1 0.848 · AUC 0.926
+- **Cancer**: Acc 0.974 · Precision 1.000 · Recall 0.929 · F1 0.963 · AUC 0.994
+
+These are saved verbatim in `model/*_metrics.json`.
 
 ---
 
 ## 📄 License
-
 This project is licensed under the MIT License.
-
----
-
-## 📚 Useful Resources
-
-1. WHO - Diabetes
-2. American Heart Association
-3. BreastCancer.org
-4. CDC - Dengue Info
-5. National Health Portal (India)
-
----
-
-## 🙌 Acknowledgements
-
-Created with ❤️ for academic and healthcare awareness purposes.
-Designed and developed by Utkarsh Singh Parihar.
+Designed for educational and screening purposes. **Not a substitute for professional medical advice.**

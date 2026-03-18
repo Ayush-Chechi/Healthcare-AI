@@ -1,0 +1,39 @@
+{
+  "dataset": "heart.csv",
+  "n_rows": 920,
+  "n_features_raw": 13,
+  "numeric_features": [
+    "age",
+    "sex",
+    "cp",
+    "trestbps",
+    "chol",
+    "fbs",
+    "restecg",
+    "thalach",
+    "exang",
+    "oldpeak",
+    "slope",
+    "ca",
+    "thal"
+  ],
+  "categorical_features": [],
+  "best_model": "random_forest",
+  "best_cv_auc": 0.8811720358332824,
+  "best_params": {
+    "model__n_estimators": 300,
+    "model__min_samples_split": 2,
+    "model__min_samples_leaf": 1,
+    "model__max_features": "log2",
+    "model__max_depth": 6
+  },
+  "test_metrics": {
+    "accuracy": 0.8260869565217391,
+    "precision": 0.8240740740740741,
+    "recall": 0.8725490196078431,
+    "f1": 0.8476190476190476,
+    "auc_roc": 0.9259923481587756
+  },
+  "model_path": "model\\heart_pipeline.pkl",
+  "schema_path": "model\\heart_schema.json"
+}

@@ -1,0 +1,43 @@
+{
+  "dataset": "diabetes.csv",
+  "n_rows": 520,
+  "n_features_raw": 16,
+  "numeric_features": [
+    "age"
+  ],
+  "categorical_features": [
+    "gender",
+    "polyuria",
+    "polydipsia",
+    "sudden_weight_loss",
+    "weakness",
+    "polyphagia",
+    "genital_thrush",
+    "visual_blurring",
+    "itching",
+    "irritability",
+    "delayed_healing",
+    "partial_paresis",
+    "muscle_stiffness",
+    "alopecia",
+    "obesity"
+  ],
+  "best_model": "random_forest",
+  "best_cv_auc": 0.9964460784313726,
+  "best_params": {
+    "model__n_estimators": 300,
+    "model__min_samples_split": 2,
+    "model__min_samples_leaf": 1,
+    "model__max_features": "log2",
+    "model__max_depth": 6
+  },
+  "test_metrics": {
+    "accuracy": 0.9711538461538461,
+    "precision": 0.9841269841269841,
+    "recall": 0.96875,
+    "f1": 0.9763779527559056,
+    "auc_roc": 0.99921875
+  },
+  "model_path": "model\\diabetes_pipeline.pkl",
+  "schema_path": "model\\diabetes_schema.json"
+}

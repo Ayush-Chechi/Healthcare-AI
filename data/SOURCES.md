@@ -1,0 +1,3 @@
+- **diabetes**: Early Stage Diabetes Risk Prediction Dataset — `https://archive.ics.uci.edu/static/public/529/early+stage+diabetes+risk+prediction+dataset.zip` (UCI ML Repository: Early Stage Diabetes Risk Prediction Dataset (DOI: 10.24432/C5VG8H))
+- **heart**: Heart Disease (processed datasets: Cleveland/Hungary/Switzerland/VA) — `https://archive.ics.uci.edu/ml/machine-learning-databases/heart-disease/` (UCI ML Repository: Heart Disease)
+- **cancer**: Breast Cancer Wisconsin (Diagnostic) (WDBC) — `https://archive.ics.uci.edu/ml/machine-learning-databases/breast-cancer-wisconsin/wdbc.data` (UCI ML Repository: Breast Cancer Wisconsin (Diagnostic))

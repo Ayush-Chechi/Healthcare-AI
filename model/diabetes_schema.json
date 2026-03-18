@@ -1,0 +1,115 @@
+{
+  "features": {
+    "age": {
+      "type": "numeric",
+      "min": 27.0,
+      "max": 72.0,
+      "default": 47.5
+    },
+    "gender": {
+      "type": "categorical",
+      "values": [
+        "Female",
+        "Male"
+      ]
+    },
+    "polyuria": {
+      "type": "categorical",
+      "values": [
+        "No",
+        "Yes"
+      ]
+    },
+    "polydipsia": {
+      "type": "categorical",
+      "values": [
+        "No",
+        "Yes"
+      ]
+    },
+    "sudden_weight_loss": {
+      "type": "categorical",
+      "values": [
+        "No",
+        "Yes"
+      ]
+    },
+    "weakness": {
+      "type": "categorical",
+      "values": [
+        "No",
+        "Yes"
+      ]
+    },
+    "polyphagia": {
+      "type": "categorical",
+      "values": [
+        "No",
+        "Yes"
+      ]
+    },
+    "genital_thrush": {
+      "type": "categorical",
+      "values": [
+        "No",
+        "Yes"
+      ]
+    },
+    "visual_blurring": {
+      "type": "categorical",
+      "values": [
+        "No",
+        "Yes"
+      ]
+    },
+    "itching": {
+      "type": "categorical",
+      "values": [
+        "No",
+        "Yes"
+      ]
+    },
+    "irritability": {
+      "type": "categorical",
+      "values": [
+        "No",
+        "Yes"
+      ]
+    },
+    "delayed_healing": {
+      "type": "categorical",
+      "values": [
+        "No",
+        "Yes"
+      ]
+    },
+    "partial_paresis": {
+      "type": "categorical",
+      "values": [
+        "No",
+        "Yes"
+      ]
+    },
+    "muscle_stiffness": {
+      "type": "categorical",
+      "values": [
+        "No",
+        "Yes"
+      ]
+    },
+    "alopecia": {
+      "type": "categorical",
+      "values": [
+        "No",
+        "Yes"
+      ]
+    },
+    "obesity": {
+      "type": "categorical",
+      "values": [
+        "No",
+        "Yes"
+      ]
+    }
+  }
+}
